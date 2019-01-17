@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Modal</title>
+    <span th:include="common/templates :: common-css-js"></span>
+    <span th:include="common/templates :: init-menu"></span>
+
+</head>
+<body>
+<div th:replace="common/templates :: header"></div>
+<div class="container">
+    <div class="page-header">
+        <div class="h3">Modal</div>
+    </div>
+    <div>
+        <label>simple</label><br>
+        <a class="btn btn-default" data-toggle="modal" data-target="#simple-modal">modal-toggle</a>&nbsp;
+        <hr>
+    </div>
+    <div>
+        <label>Js 控制</label><br>
+        <pre>屏蔽空白点击关闭 data-backdrop="static" </pre>
+        <a class="btn btn-default" id="btn-js">modal-js</a>
+        <hr>
+    </div>
+
+</div>
+</body>
+<!-- Modal -->
+<div class="modal fade" id="simple-modal" tabindex="-1" role="dialog" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-js" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"  id="modal-close">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:inline="text">
+
+    $("#btn-js").click(function () {
+        $("#modal-js").modal("show");
+    })
+
+    $("#modal-close").click(function () {
+        $("#modal-js").modal("hide");
+    })
+
+</script>
+
+</html>

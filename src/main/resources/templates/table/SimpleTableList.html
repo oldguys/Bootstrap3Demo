@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple</title>
+    <span th:include="common/templates :: common-css-js"></span>
+    <span th:include="common/templates :: init-menu"></span>
+    <span th:include="common/templates :: bootstrap-table"></span>
+</head>
+<body>
+<div th:replace="common/templates :: header"></div>
+<div class="container">
+    <div class="page-header">
+        <div class="h3">Simple Table</div>
+    </div>
+    <table id="records-info"></table>
+</div>
+</body>
+<script th:inline="text">
+    $('#records-info').bootstrapTable({
+        url: "[[@{/table/list}]]",//请求数据url
+        showRefresh: true,
+        smartDisplay: true,
+        showToggle: true,
+        paginationPreText: '上一页',
+        paginationNextText: '下一页',
+        pagination: true,//分页
+        pageNumber: 1,
+        pageSize: 15,
+        pageList: [10, 20, 30, 50, 'all'],//分页步进值
+        search: true, //显示搜索框
+        columns: [
+            {
+                field: 'id',
+                title: '编号',
+            },
+            {
+                field: 'name',
+                title: '名称',
+            },
+            {
+                field: 'time',
+                title: '时间',
+            },
+            {
+                field: 'context',
+                title: '序列号',
+                width: '600px' // 宽度
+            },
+            {
+                field: 'status',
+                title: '状态',
+                formatter: function (value, row, index) { // 单元格格式化函数
+                    if(value == 1){
+                        return "<span class='text-success'>正常</span>"
+                    }
+                    return "<span class='text-danger'>禁用</span>"
+                }
+            },
+            {
+                title: '编辑',
+                formatter: function (value, row, index) { // 单元格格式化函数
+
+                    var id = row['id'];
+                    var str = '<div class="btn-group"> ' +
+                        ' <button class="btn btn-default btn-edit" title="详情"' +
+                        'data-toggle="tooltip" data-placement="left" data-value="' + id + '" >  ' +
+                        '  <i class="glyphicon glyphicon-pencil"></i>  ' +
+                        ' </button>  ' +
+                        ' </div>  ';
+
+                    return str;
+                }
+            },
+        ]
+    })
+</script>
+</html>

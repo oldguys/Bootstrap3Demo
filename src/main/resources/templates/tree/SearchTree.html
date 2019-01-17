@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search</title>
+    <span th:include="common/templates :: common-css-js"></span>
+    <span th:include="common/templates :: init-menu"></span>
+    <span th:include="common/templates :: bootstrap-treeview"></span>
+</head>
+<style>
+    #record-tree .list-group-item {
+        border: none;
+    }
+
+</style>
+<body>
+<div th:replace="common/templates :: header"></div>
+<div class="container">
+    <div class="page-header">
+        <div class="h3">Search Tree
+            <div class="navbar-form navbar-right" style="margin-top: -5px;">
+                <div class="input-group">
+                    <input type="text" id="tree-query" class="form-control" placeholder="Search for...">
+                    <span class="input-group-btn">
+                          <a class="btn btn-default">
+                              <i class="glyphicon glyphicon-search"></i>
+                          </a>
+                            <a id="header-search-query"></a>
+                </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div id="record-tree"></div>
+        </div>
+        <div class="col-md-7">
+            <pre style=' white-space:pre-wrap ; ' id="data-panel"></pre>
+        </div>
+    </div>
+
+</div>
+</body>
+<script th:inline="text">
+    $.get("[[@{/tree/simple}]]", function (data) {
+
+        var json = JSON.stringify(data, null, 2);
+        $("#data-panel").html(json).show();
+
+        $("#record-tree").treeview({
+            data: data,// 赋值
+            highlightSelected: true,// 选中项不高亮，避免和上述制定的颜色变化规则冲突
+            multiSelect: false,// 不允许多选，因为我们要通过check框来控制
+            showCheckbox: false,// 展示checkbox
+            highlightSearchResults: true, // 高亮查询结果
+            levels: 10, // 展开级别 Default: 2
+            searchResultBackColor: '#CCC', // 查找背景
+            showTags: true,
+            onNodeSelected: function (event, data) {
+
+                var json = JSON.stringify(data, null, 2);
+                $("#data-panel").html(json).show();
+            }
+        });
+
+    })
+
+    $("#tree-query").on("keyup", function () {
+        var value = $.trim($(this).val());
+        if (value.length > 0) {
+
+            // 先折叠
+            $('#record-tree').treeview('collapseAll', {silent: true});
+            // 自动展开结果，返回搜索到的集合
+            var nodes = $("#record-tree").treeview('clearSearch').treeview('search', [value, {
+                ignoreCase: true,    // 忽略大小写
+                exactMatch: false,   // like or equals
+                revealResults: true, // reveal matching nodes
+            }]);
+
+        } else {
+            $('#record-tree').treeview('clearSearch').treeview('expandAll', {silent: true});
+        }
+    })
+</script>
+</html>

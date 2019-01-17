@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DATETIME-PICKER</title>
+    <span th:include="common/templates :: common-css-js"></span>
+    <span th:include="common/templates :: init-menu"></span>
+    <span th:include="common/templates :: bootstrap-datetimepicker"></span>
+
+</head>
+<body>
+<div th:replace="common/templates :: header"></div>
+<div class="container">
+
+    <div class="page-header">
+        <div class="h3">DATETIME-PICKER
+            <a href="http://www.bootcss.com/p/bootstrap-datetimepicker/" target="_blank">
+                <i class="glyphicon glyphicon-tag small"></i>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="time-picker">时间:</label>
+                <input id="time-picker" class="form-control page-query-info time-picker"  type="text">
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+<script th:inline="text">
+    $(".time-picker").datetimepicker({
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        startView: 3,
+        minView:2,
+        forceParse: 0,
+        showMeridian: 1,
+        format: 'yyyy-mm-dd',//显示格式
+        todayHighlight: 1,
+        language: 'zh-CN',//显示中文
+        autoclose: true,//选中自动关闭
+        todayBtn: true//显示今日按钮
+    }).click(function () {
+        $(this).datetimepicker('show');
+    });
+</script>
+</html>

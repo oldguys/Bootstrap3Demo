@@ -1,0 +1,11 @@
+server:
+  port: 8081
+spring:
+  thymeleaf:
+    cache: false
+    mode: LEGACYHTML5
+  jackson:
+    time-zone: GMT+8
+    date-format: "yyyy/MM/dd"
+  mvc:
+    date-format: yyyy/MM/dd

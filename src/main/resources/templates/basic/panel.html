@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel</title>
+    <span th:include="common/templates :: common-css-js"></span>
+    <span th:include="common/templates :: init-menu"></span>
+
+</head>
+<style>
+    .bs-callout {
+        padding: 20px;
+        margin: 20px 0;
+        border: 1px solid #eee;
+        border-left-width: 5px;
+        border-radius: 3px;
+    }
+    .bs-callout-warning {
+        border-left-color: #aa6708;
+    }
+    .bs-callout-info {
+        border-left-color: #1b809e;
+    }
+    .bs-callout-success {
+        border-left-color: #3c763d;
+    }
+    .bs-callout-danger {
+        border-left-color: #ce4844;
+    }
+
+</style>
+<body>
+<div th:replace="common/templates :: header"></div>
+<div class="container">
+
+    <div class="page-header">
+        <div class="h3">Panel</div>
+    </div>
+    <div>
+        <label class="h3">simple:</label><br>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="background-color: #ffffff">
+                        <button type="button" class="close"><span aria-hidden="true">&times;</span></button>
+                        head....
+                    </div>
+                    <div class="panel-body text-default">
+                        body
+                    </div>
+                    <div class="panel-footer text-right" style="background-color: #ffffff">
+                        <a class="btn btn-default btn-default btn-sm ">Success</a>
+                        <a class="btn btn-default btn-danger btn-sm ">Failure</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <div>
+        <label class="h3">style:</label><br>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="bs-callout bs-callout-success ">
+                    bs-callout bs-callout-success
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="bs-callout bs-callout-info ">
+                    bs-callout bs-callout-info
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="bs-callout bs-callout-danger ">
+                    bs-callout bs-callout-danger
+                </div>
+            </div>
+        </div>
+        <hr>
+    </div>
+
+</div>
+</body>
+
+<script th:inline="text">
+
+</script>
+
+</html>

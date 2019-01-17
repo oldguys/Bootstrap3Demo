@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Check</title>
+    <span th:include="common/templates :: common-css-js"></span>
+    <span th:include="common/templates :: init-menu"></span>
+    <span th:include="common/templates :: bootstrap-treeview"></span>
+</head>
+<style>
+    #record-tree .list-group-item {
+        border: none;
+    }
+
+    .sort:hover {
+        color: #a94442;;
+    }
+</style>
+<body>
+<div th:replace="common/templates :: header"></div>
+<div class="container">
+    <div class="page-header">
+        <div class="h3">CheckBox Tree</div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div id="record-tree"></div>
+        </div>
+        <div class="col-md-4">
+            <label>选择项</label>
+            <div id="checkItemList"></div>
+        </div>
+        <div class="col-md-4">
+            <label>选择树</label>
+            <div id="checkItemTree"></div>
+        </div>
+    </div>
+
+</div>
+</body>
+<script th:inline="text">
+
+    /**
+     *  选中项
+     * @type {{}}
+     */
+    var checkItemList = {};
+    var dataSource = {};
+
+    $.get("[[@{/tree/simple}]]", function (data) {
+
+        dataSource = data;
+
+        $("#record-tree").treeview({
+            data: data,// 赋值
+            highlightSelected: true,// 选中项不高亮，避免和上述制定的颜色变化规则冲突
+            multiSelect: false,// 不允许多选，因为我们要通过check框来控制
+            showCheckbox: true,// 展示checkbox
+            highlightSearchResults: true, // 高亮查询结果
+            levels: 5, // 展开级别 Default: 2
+            searchResultBackColor: '#CCC', // 查找背景
+//            showTags: true,
+            showIcon: false,
+            onNodeSelected: function (event, data) {
+
+                // 触发选择(取消)checkbox
+                $("#record-tree").treeview("toggleNodeChecked", data['nodeId']);
+                // 刷新列表
+                displayCheckItemList();
+                // 刷新树
+                displayCheckTree();
+            },
+            onNodeUnselected: function (event, data) {
+//                console.log("onNodeUnselected");
+            },
+            onNodeChecked: function (event, data) {
+                // 选择项
+                var sequence = data['sequence'];
+                checkItemList[sequence] = data['text'];
+                // 级联选取
+                var parentId = data['parentId'];
+
+                if (parentId != undefined) {
+                    $("#record-tree").treeview("checkNode", data['parentId']);
+                }
+            },
+            onNodeUnchecked: function (event, data) {
+//                console.log("onNodeUnchecked");
+
+                var nodes = data['nodes'];
+
+                var sequence = data['sequence'];
+                checkItemList[sequence] = undefined;
+
+                if (nodes != undefined) {
+                    for (var i = 0; i < nodes.length; i++) {
+                        var node = nodes[i];
+                        var state = node['state'];
+                        if (state != undefined && state['checked']) {
+//                            menuSet[node['id']] = undefined;
+                            $("#record-tree").treeview("uncheckNode", node['nodeId']);
+                        }
+                    }
+                }
+            },
+        });
+
+    })
+
+    /***
+     * 显示 集合
+     **/
+    function displayCheckItemList() {
+
+        var str = '<ol>';
+        for (var key in checkItemList) {
+            var value = checkItemList[key];
+
+            if (value != undefined) {
+                str += '<li>' + checkItemList[key] + '</li>';
+            }
+        }
+        str += '</ol>';
+
+        // 选择目录
+        $("#checkItemList").empty().html(str);
+
+    }
+
+    /***
+     * 显示获取树
+     **/
+    function displayCheckTree() {
+
+        console.log(dataSource)
+
+        var tree ='';
+        tree = appendTreeItem(dataSource, tree);
+
+        // 选择树
+        $("#checkItemTree").empty().html(tree);
+    }
+
+    /**
+     *  拼接节点
+     * @param itemList
+     * @param tree
+     */
+    function appendTreeItem(itemList, tree) {
+        var tree = '<ul>';
+        for (var key in itemList) {
+            var node = itemList[key];
+            var sequence = node['sequence'];
+
+            if (checkItemList[sequence] != undefined) {
+                tree += '<li>';
+                tree += node['text'];
+                if (node['nodes'] != undefined) {
+                    tree += appendTreeItem(node['nodes'], tree);
+                }
+                tree += '</li>';
+            }
+        }
+        tree += '</ul>';
+
+        return tree;
+    }
+</script>
+</html>

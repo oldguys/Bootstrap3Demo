@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Complex</title>
+    <span th:include="common/templates :: common-css-js"></span>
+    <span th:include="common/templates :: init-menu"></span>
+    <span th:include="common/templates :: bootstrap-table"></span>
+    <span th:include="common/templates :: bootstrap-table-export"></span>
+</head>
+<body>
+<div th:replace="common/templates :: header"></div>
+<div class="container">
+    <div class="page-header">
+        <div class="h3">Complex Table</div>
+    </div>
+    <table id="records-info"></table>
+</div>
+</body>
+<script th:inline="text">
+
+    var sub_size = 50
+
+    function transfer(str) {
+        if (str.length > sub_size) {
+            var arrays = {};
+            var index = 0;
+            for (var i = 0; i < str.length; i = i + sub_size) {
+//                console.log(i);
+                if (str.length >= i + sub_size) {
+                    arrays[index] = str.substr(i, sub_size);
+                } else {
+                    arrays[index] = str.substr(i, sub_size);
+                }
+                index++;
+            }
+
+            var result = '';
+
+            for (var key in arrays) {
+                result += arrays[key] + '\\n';
+            }
+
+//            console.log(result);
+            return result;
+        }
+        return str;
+    }
+
+    $('#records-info').bootstrapTable({
+        url: "[[@{/table/list}]]",//请求数据url
+        showRefresh: true,
+        smartDisplay: true,
+        showToggle: true,
+        paginationPreText: '上一页',
+        paginationNextText: '下一页',
+        pagination: true,//分页
+//        paginationVAlign: 'bottom',
+        pageNumber: 1,
+        pageSize: 15,
+        pageList: [10, 20, 30, 50, 'all'],//分页步进值
+        search: true, //显示搜索框
+        showExport: true, // 导出功能
+        fileName: '文档',
+        detailView: true, // 展开详情
+        detailFormatter: function (index, row, element) { // 展开复写方法
+            var json = JSON.stringify(row, null, 2);
+            // 控制Json代码显示格式: 自动换行
+            return "<pre style=' white-space:pre-wrap ; background-color: #ffffff'>" + json + "</pre>";
+        },
+        onPostBody: function () { // 加载完表格主体后执行
+
+            // 更改 展开样式
+            var list = $("#records-info").find(".detail-icon");
+            for (var i = 0; i < list.length; i++) {
+                var item = list[i];
+                // 修改展开符号颜色
+                $(item).css("color", "#555");
+            }
+        },
+        columns: [
+            {
+                field: 'id',
+                title: '编号',
+            },
+            {
+                field: 'name',
+                title: '名称',
+            },
+            {
+                field: 'time',
+                title: '时间',
+            },
+            {
+                field: 'context',
+                title: '序列号',
+                formatter: function (value, row, index) { // 单元格格式化函数
+
+                    if (value.length > 40) {
+                        return value.substr(0, 40);
+                    }
+
+                    return value;
+                }
+            },
+            {
+                field: 'status',
+                title: '状态',
+                formatter: function (value, row, index) { // 单元格格式化函数
+                    if (value == 1) {
+                        return "<span class='text-success'>正常</span>"
+                    }
+                    return "<span class='text-danger'>禁用</span>"
+                }
+            },
+            {
+                title: '编辑',
+                formatter: function (value, row, index) { // 单元格格式化函数
+
+                    var id = row['id'];
+                    var str = '<div class="btn-group"> ' +
+                        ' <button class="btn btn-default btn-edit" title="详情"' +
+                        'data-toggle="tooltip" data-placement="left" data-value="' + id + '" >  ' +
+                        '  <i class="glyphicon glyphicon-pencil"></i>  ' +
+                        ' </button>  ' +
+                        ' </div>  ';
+
+                    return str;
+                }
+            },
+        ]
+    })
+</script>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple</title>
+    <span th:include="common/templates :: common-css-js"></span>
+    <span th:include="common/templates :: init-menu"></span>
+    <span th:include="common/templates :: bootstrap-treeview"></span>
+</head>
+<style>
+    #menu-info .list-group-item {
+        border: none;
+    }
+
+    .sort:hover {
+        color: #a94442;;
+    }
+</style>
+<body>
+<div th:replace="common/templates :: header"></div>
+<div class="container">
+    <div class="page-header">
+        <div class="h3">Simple Tree</div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div id="menu-info"></div>
+        </div>
+        <div class="col-md-7">
+            <pre style=' white-space:pre-wrap ; ' id="data-panel"></pre>
+        </div>
+    </div>
+
+</div>
+</body>
+<script th:inline="text">
+    $.get("[[@{/tree/simple}]]", function (data) {
+
+        var json = JSON.stringify(data, null, 2);
+        $("#data-panel").html(json);
+
+        $("#menu-info").treeview({
+            data: data,// 赋值
+            highlightSelected: true,// 选中项不高亮，避免和上述制定的颜色变化规则冲突
+            multiSelect: false,// 不允许多选，因为我们要通过check框来控制
+            showCheckbox: false,// 展示checkbox
+            highlightSearchResults: true, // 高亮查询结果
+            levels: 10, // 展开级别 Default: 2
+            onNodeSelected: function (event, data) {
+
+                var json = JSON.stringify(data, null, 2);
+                $("#data-panel").html(json);
+            }
+        });
+
+    })
+</script>
+</html>
